@@ -85,13 +85,13 @@ class TestStrategy(bt.Strategy):
     )
 
     def log(self, txt, dt=None):
-        ''' Logging function fot this strategy'''
         dt = dt or self.datas[0].datetime.date(0)
         print('%s, %s' % (dt.isoformat(), txt))
 
     def __init__(self):
-        self.dataclose = self.datas[0].close
-
+        ####### TODO #######
+        self.dataclose = self.datas[0].open
+#         print(self.dataclose)
         self.order = None
         self.buyprice = None
         self.buycomm = None
@@ -99,6 +99,7 @@ class TestStrategy(bt.Strategy):
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
             # Buy/Sell order submitted/accepted to/by broker - Nothing to do
+            
             return
 
         # Check if an order has been completed
@@ -126,12 +127,12 @@ class TestStrategy(bt.Strategy):
 
         self.order = None
 
-    def notify_trade(self, trade):
-        if not trade.isclosed:
-            return
+#     def notify_trade(self, trade):
+#         if not trade.isclosed:
+#             return
 
-        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-                 (trade.pnl, trade.pnlcomm))
+#         self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+#                  (trade.pnl, trade.pnlcomm))
 
     def next(self):
         # Simply log the closing price of the series from the reference
