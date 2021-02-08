@@ -89,12 +89,20 @@ class TestStrategy(bt.Strategy):
         print('%s, %s' % (dt.isoformat(), txt))
 
     def __init__(self):
-        ####### TODO #######
-        self.dataclose = self.datas[0].open
-#         print(self.dataclose)
+#         print(self.datas[0])
+        self.dataclose = self.datas[0].close
+        self.dataopen = self.datas[0].open
+        self.datahigh = self.datas[0].high
+        self.datalow = self.datas[0].low
+        self.volume = self.datas[0].volume
+        
+        print(self.dataclose[0], self.dataopen[0], self.datahigh[0], self.volume[0], '=====')
+        
         self.order = None
         self.buyprice = None
         self.buycomm = None
+        self.bar_executed = 0
+#         self.sma = bt.indicators.SimpleMovingAverage(self.data)
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -127,12 +135,12 @@ class TestStrategy(bt.Strategy):
 
         self.order = None
 
-#     def notify_trade(self, trade):
-#         if not trade.isclosed:
-#             return
+    def notify_trade(self, trade):
+        if not trade.isclosed:
+            return
 
-#         self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
-#                  (trade.pnl, trade.pnlcomm))
+        self.log('OPERATION PROFIT, GROSS %.2f, NET %.2f' %
+                 (trade.pnl, trade.pnlcomm))
 
     def next(self):
         # Simply log the closing price of the series from the reference
