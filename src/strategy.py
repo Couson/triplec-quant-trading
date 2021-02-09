@@ -96,7 +96,7 @@ class TestStrategy(bt.Strategy):
         self.datalow = self.datas[0].low
         self.volume = self.datas[0].volume
         
-        print(self.dataclose[0], self.dataopen[0], self.datahigh[0], self.volume[0], '=====')
+#         print(self.dataclose[0], self.dataopen[0], self.datahigh[0], self.volume[0], '=====')
         
         self.order = None
         self.buyprice = None
