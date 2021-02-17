@@ -31,6 +31,7 @@ def display_menu():
     ### TODO
 
 def write_sys_log(msg):
+    ## put this func in utils.py
     now = datetime.datetime.now()
     
     with open(LOG_PATH, 'a') as log:
@@ -40,6 +41,7 @@ def write_sys_log(msg):
 def create_account(params):
     acc = bt.Cerebro(cheat_on_open = params['cheat_on_open'])
     acc.broker.setcash(params['initial_cash'])
+    acc.broker.setcommission(params['commission'])
     
     msg = '--> Successfully Created Account with %s$' % params['initial_cash']
     print(msg)
@@ -65,7 +67,8 @@ def ingest_data(params, acc):
                          parse_dates=True)[price_column].rename(ticker) for ticker in tickers], \
             axis=1, \
             sort=True)
-    # drop duplicated columns
+    
+    # create ckpts to save time
     stocks = stocks.loc[:,~stocks.columns.duplicated()]
     
     for ticker in tickers:
@@ -84,14 +87,22 @@ def ingest_data(params, acc):
     msg = '--> Successfully Ingested Data'
     print(msg)
     write_sys_log(msg)
+    return acc
     
 def invest(params, acc):
-    ###### TODO
-    params
-    acc.addstrategy(TestStrategy)
-    acc.run()
+    ###### TODO 把下面的分开
+#     params
+    acc.addstrategy(CrossSectionalMR)
+#     acc.addsizer(bt.sizers.PercentSizer, percents = 50) ##### cheat-on-open
+    acc.addobserver(bt.observers.Value)
     
     msg = '--> Investing ...'
+    print(msg)
+    write_sys_log(msg)
+    
+    acc.run()
+    
+    msg = '--> End with %s$' % acc.broker.getvalue()
     print(msg)
     write_sys_log(msg)
     
@@ -118,7 +129,7 @@ def main(argv):
             sys.exit()
         elif opt in ('-r', '--run'):
             cerebro = create_account(account_params)
-            ingest_data(data_params, cerebro)
+            cerebro = ingest_data(data_params, cerebro)
             _ = invest(strategy_params, cerebro)
             
     

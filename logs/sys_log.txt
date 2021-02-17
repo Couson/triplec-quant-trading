@@ -1,0 +1,51 @@
+2021-02-17 01:31:35.930537 --> Successfully Created Account with 1000$
+2021-02-17 01:31:41.272854 --> Successfully Ingested Data
+2021-02-17 01:31:52.322529 --> Investing ...
+2021-02-17 01:31:52.322863 --> End with 1000$
+2021-02-17 01:32:38.789990 --> Successfully Created Account with 1000$
+2021-02-17 01:32:42.862668 --> Successfully Ingested Data
+2021-02-17 01:32:53.920626 --> Investing ...
+2021-02-17 01:32:53.920993 --> End with 1000$
+2021-02-17 01:33:30.174277 --> Successfully Created Account with 1000$
+2021-02-17 01:33:35.124312 --> Successfully Ingested Data
+2021-02-17 01:33:48.477257 --> Investing ...
+2021-02-17 01:33:48.477591 --> End with 1000$
+2021-02-17 01:34:37.641548 --> Successfully Created Account with 1000$
+2021-02-17 01:34:41.714627 --> Successfully Ingested Data
+2021-02-17 01:34:52.826745 --> Investing ...
+2021-02-17 01:34:52.827092 --> End with 1000$
+2021-02-17 01:37:40.816418 --> Successfully Created Account with 1000$
+2021-02-17 01:37:45.395371 --> Successfully Ingested Data
+2021-02-17 01:37:56.913022 --> Investing ...
+2021-02-17 01:37:56.913436 --> End with 1000$
+2021-02-17 01:38:53.515361 --> Successfully Created Account with 1000$
+2021-02-17 01:38:58.102339 --> Successfully Ingested Data
+2021-02-17 01:39:12.195843 --> Investing ...
+2021-02-17 01:39:12.197768 --> End with 1000$
+2021-02-17 01:40:15.344502 --> Successfully Created Account with 1000$
+2021-02-17 01:40:20.755353 --> Successfully Ingested Data
+2021-02-17 01:40:32.113185 --> Investing ...
+2021-02-17 01:40:32.113539 --> End with 1000$
+2021-02-17 01:40:36.565180 --> Successfully Created Account with 1000$
+2021-02-17 01:40:41.080584 --> Successfully Ingested Data
+2021-02-17 01:40:52.890017 --> Investing ...
+2021-02-17 01:40:52.890353 --> End with 1000$
+2021-02-17 01:44:46.904034 --> Successfully Created Account with 1000$
+2021-02-17 01:44:50.763910 --> Successfully Ingested Data
+2021-02-17 01:44:50.767885 --> Investing ...
+2021-02-17 01:45:06.092141 --> End with 1000$
+2021-02-17 02:02:26.791203 --> Successfully Created Account with 1000000$
+2021-02-17 02:02:30.830352 --> Successfully Ingested Data
+2021-02-17 02:02:30.831261 --> Investing ...
+2021-02-17 02:02:43.324030 --> End with 1000000$
+2021-02-17 02:03:01.262143 --> Successfully Created Account with 1000000$
+2021-02-17 02:03:05.890198 --> Successfully Ingested Data
+2021-02-17 02:03:05.891095 --> Investing ...
+2021-02-17 02:03:20.138541 --> End with 1000000$
+2021-02-17 02:04:14.016812 --> Successfully Created Account with 1000000$
+2021-02-17 02:04:19.446659 --> Successfully Ingested Data
+2021-02-17 02:04:19.447732 --> Investing ...
+2021-02-17 02:06:13.734876 --> Successfully Created Account with 1000000$
+2021-02-17 02:06:17.981037 --> Successfully Ingested Data
+2021-02-17 02:06:17.981888 --> Investing ...
+2021-02-17 02:09:19.056337 --> End with 43882.33346134755$

@@ -4,9 +4,9 @@ from __future__ import (absolute_import, division, print_function,
 import datetime  # For datetime objects
 import os.path  # To manage paths
 import sys  # To find out the script name (in argv[0])
+import numpy as np
 
 import backtrader as bt
-from models import *
 
 # Create a Stratey
 # class Strategy(bt.Strategy):
@@ -83,11 +83,13 @@ class TestStrategy(bt.Strategy):
     params = (
         ('exitbars', 5),
     )
-    def __init__(self, strategy_params = None):
+
+    def log(self, txt, dt=None):
+        dt = dt or self.datas[0].datetime.date(0)
+        print('%s, %s' % (dt.isoformat(), txt))
+
+    def __init__(self):
 #         print(self.datas[0])
-        self.strategy_params = strategy_params
-       
-        
         self.dataclose = self.datas[0].close
         self.dataopen = self.datas[0].open
         self.datahigh = self.datas[0].high
@@ -101,9 +103,6 @@ class TestStrategy(bt.Strategy):
         self.buycomm = None
         self.bar_executed = 0
 #         self.sma = bt.indicators.SimpleMovingAverage(self.data)
-    def log(self, txt, dt=None):
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -144,10 +143,46 @@ class TestStrategy(bt.Strategy):
                  (trade.pnl, trade.pnlcomm))
 
     def next(self):
-        if self.strategy_params['use-model'] == 'mean-reversion':
-            pass
-        elif self.strategy_params['use-model'] == 'momentum':
-            pass
+        # Simply log the closing price of the series from the reference
+        self.log('Close, %.2f' % self.dataclose[0])
+
+        # Check if an order is pending ... if yes, we cannot send a 2nd one
+        if self.order:
+            return
+
+        # Check if we are in the market
+        if not self.position:
+
+            # Not yet ... we MIGHT BUY if ...
+            if self.dataclose[0] < self.dataclose[-1]:
+                    # current close less than previous close
+
+                    if self.dataclose[-1] < self.dataclose[-2]:
+                        # previous close less than the previous close
+
+                        # BUY, BUY, BUY!!! (with default parameters)
+                        self.log('BUY CREATE, %.2f' % self.dataclose[0])
+
+                        # Keep track of the created order to avoid a 2nd order
+                        self.order = self.buy()
+
+        else:
+            # Already in the market ... we might sell
+            if len(self) >= (self.bar_executed + self.params.exitbars):
+                # SELL, SELL, SELL!!! (with all possible default parameters)
+                self.log('SELL CREATE, %.2f' % self.dataclose[0])
+
+                # Keep track of the created order to avoid a 2nd order
+                self.order = self.sell()
+                
+class CrossSectionalMR(bt.Strategy):
+    def __init__(self, models_params = None):
+        self.models_params = models_params
+        
+    def prenext(self):
+        self.next()
+    
+    def next(self):
         # only look at data that existed yesterday
         available = list(filter(lambda d: len(d), self.datas)) 
         
@@ -163,34 +198,3 @@ class TestStrategy(bt.Strategy):
         
         for i, d in enumerate(available):
             self.order_target_percent(d, target=weights[i])
-#         # Simply log the closing price of the series from the reference
-#         self.log('Close, %.2f' % self.dataclose[0])
-
-#         # Check if an order is pending ... if yes, we cannot send a 2nd one
-#         if self.order:
-#             return
-
-#         # Check if we are in the market
-#         if not self.position:
-
-#             # Not yet ... we MIGHT BUY if ...
-#             if self.dataclose[0] < self.dataclose[-1]:
-#                     # current close less than previous close
-
-#                     if self.dataclose[-1] < self.dataclose[-2]:
-#                         # previous close less than the previous close
-
-#                         # BUY, BUY, BUY!!! (with default parameters)
-#                         self.log('BUY CREATE, %.2f' % self.dataclose[0])
-
-#                         # Keep track of the created order to avoid a 2nd order
-#                         self.order = self.buy()
-
-#         else:
-#             # Already in the market ... we might sell
-#             if len(self) >= (self.bar_executed + self.params.exitbars):
-#                 # SELL, SELL, SELL!!! (with all possible default parameters)
-#                 self.log('SELL CREATE, %.2f' % self.dataclose[0])
-
-#                 # Keep track of the created order to avoid a 2nd order
-#                 self.order = self.sell()
