@@ -34,7 +34,7 @@ def write_sys_log(msg):
     now = datetime.datetime.now()
     
     with open(LOG_PATH, 'a') as log:
-        to_write = str(now) + ' %s' %msg
+        to_write = str(now) + ' %s' %msg + '\n'
         log.write(to_write)
     
 def create_account(params):
