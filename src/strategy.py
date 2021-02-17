@@ -83,14 +83,11 @@ class TestStrategy(bt.Strategy):
     params = (
         ('exitbars', 5),
     )
-
-    def log(self, txt, dt=None):
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
-
-    def __init__(self, model_params = None):
+    def __init__(self, strategy_params = None):
 #         print(self.datas[0])
-        self.model_param = model_params
+        self.strategy_params = strategy_params
+       
+        
         self.dataclose = self.datas[0].close
         self.dataopen = self.datas[0].open
         self.datahigh = self.datas[0].high
@@ -104,6 +101,9 @@ class TestStrategy(bt.Strategy):
         self.buycomm = None
         self.bar_executed = 0
 #         self.sma = bt.indicators.SimpleMovingAverage(self.data)
+    def log(self, txt, dt=None):
+        dt = dt or self.datas[0].datetime.date(0)
+        print('%s, %s' % (dt.isoformat(), txt))
 
     def notify_order(self, order):
         if order.status in [order.Submitted, order.Accepted]:
@@ -144,10 +144,10 @@ class TestStrategy(bt.Strategy):
                  (trade.pnl, trade.pnlcomm))
 
     def next(self):
-        if self.model_param == 'mean-reversion':
-            
-        elif self.model_param == 'momentum':
-            
+        if self.strategy_params['use-model'] == 'mean-reversion':
+            pass
+        elif self.strategy_params['use-model'] == 'momentum':
+            pass
         # only look at data that existed yesterday
         available = list(filter(lambda d: len(d), self.datas)) 
         

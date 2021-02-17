@@ -7,7 +7,8 @@ class Momentum(bt.Indicator):
     lines = ('tendency',)
     params = dict(period=90)
 
-    def __init__(self):
+    def __init__(self, models_params = None):
+        self.models_params = models_params
         self.addminperiod(self.params.period)
 
     def next(self):
@@ -22,6 +23,9 @@ class Momentum(bt.Indicator):
         self.lines.tendency[0] = annualized * (res.rvalue ** 2)
 
 class CrossSectionalMR(bt.Strategy):
+    def __init__(self, models_params = None):
+        self.models_params = models_params
+        
     def prenext(self):
         self.next()
     
