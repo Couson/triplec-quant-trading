@@ -6,75 +6,75 @@ import os.path  # To manage paths
 import sys  # To find out the script name (in argv[0])
 
 import backtrader as bt
-
+from models import *
 
 # Create a Stratey
-class Strategy(bt.Strategy):
-    def __init__(self):
-        self.i = 0
-        self.inds = {}
-        self.spy = self.datas[0]
-        self.stocks = self.datas[1:]
+# class Strategy(bt.Strategy):
+#     def __init__(self):
+#         self.i = 0
+#         self.inds = {}
+#         self.spy = self.datas[0]
+#         self.stocks = self.datas[1:]
         
-        self.spy_sma200 = bt.indicators.SimpleMovingAverage(self.spy.close,
-                                                            period=200)
-        for d in self.stocks:
-            self.inds[d] = {}
-            self.inds[d]["momentum"] = Momentum(d.close, period=90)
-            self.inds[d]["sma100"] = bt.indicators.SimpleMovingAverage(d.close, period=100)
-            self.inds[d]["atr20"] = bt.indicators.ATR(d, period=20)
+#         self.spy_sma200 = bt.indicators.SimpleMovingAverage(self.spy.close,
+#                                                             period=200)
+#         for d in self.stocks:
+#             self.inds[d] = {}
+#             self.inds[d]["momentum"] = Momentum(d.close, period=90)
+#             self.inds[d]["sma100"] = bt.indicators.SimpleMovingAverage(d.close, period=100)
+#             self.inds[d]["atr20"] = bt.indicators.ATR(d, period=20)
 
-    def prenext(self):
-        # call next() even when data is not available for all tickers
-        self.next()
+#     def prenext(self):
+#         # call next() even when data is not available for all tickers
+#         self.next()
     
-    def next(self):
-        if self.i % 5 == 0:
-            self.rebalance_portfolio()
-        if self.i % 10 == 0:
-            self.rebalance_positions()
-        self.i += 1
+#     def next(self):
+#         if self.i % 5 == 0:
+#             self.rebalance_portfolio()
+#         if self.i % 10 == 0:
+#             self.rebalance_positions()
+#         self.i += 1
     
-    def rebalance_portfolio(self):
-        # only look at data that we can have indicators for 
-        self.rankings = list(filter(lambda d: len(d) > 100, self.stocks))
-        self.rankings.sort(key=lambda d: self.inds[d]["momentum"][0])
-        num_stocks = len(self.rankings)
+#     def rebalance_portfolio(self):
+#         # only look at data that we can have indicators for 
+#         self.rankings = list(filter(lambda d: len(d) > 100, self.stocks))
+#         self.rankings.sort(key=lambda d: self.inds[d]["momentum"][0])
+#         num_stocks = len(self.rankings)
         
-        # sell stocks based on criteria
-        for i, d in enumerate(self.rankings):
-            if self.getposition(self.data).size:
-                if i > num_stocks * 0.2 or d < self.inds[d]["sma100"]:
-                    self.close(d)
+#         # sell stocks based on criteria
+#         for i, d in enumerate(self.rankings):
+#             if self.getposition(self.data).size:
+#                 if i > num_stocks * 0.2 or d < self.inds[d]["sma100"]:
+#                     self.close(d)
         
-        if self.spy < self.spy_sma200:
-            return
+#         if self.spy < self.spy_sma200:
+#             return
         
-        # buy stocks with remaining cash
-        for i, d in enumerate(self.rankings[:int(num_stocks * 0.2)]):
-            cash = self.broker.get_cash()
-            value = self.broker.get_value()
-            if cash <= 0:
-                break
-            if not self.getposition(self.data).size:
-                size = value * 0.001 / self.inds[d]["atr20"]
-                self.buy(d, size=size)
+#         # buy stocks with remaining cash
+#         for i, d in enumerate(self.rankings[:int(num_stocks * 0.2)]):
+#             cash = self.broker.get_cash()
+#             value = self.broker.get_value()
+#             if cash <= 0:
+#                 break
+#             if not self.getposition(self.data).size:
+#                 size = value * 0.001 / self.inds[d]["atr20"]
+#                 self.buy(d, size=size)
                 
         
-    def rebalance_positions(self):
-        num_stocks = len(self.rankings)
+#     def rebalance_positions(self):
+#         num_stocks = len(self.rankings)
         
-        if self.spy < self.spy_sma200:
-            return
+#         if self.spy < self.spy_sma200:
+#             return
 
-        # rebalance all stocks
-        for i, d in enumerate(self.rankings[:int(num_stocks * 0.2)]):
-            cash = self.broker.get_cash()
-            value = self.broker.get_value()
-            if cash <= 0:
-                break
-            size = value * 0.001 / self.inds[d]["atr20"]
-            self.order_target_size(d, size)
+#         # rebalance all stocks
+#         for i, d in enumerate(self.rankings[:int(num_stocks * 0.2)]):
+#             cash = self.broker.get_cash()
+#             value = self.broker.get_value()
+#             if cash <= 0:
+#                 break
+#             size = value * 0.001 / self.inds[d]["atr20"]
+#             self.order_target_size(d, size)
             
             
             
@@ -88,8 +88,9 @@ class TestStrategy(bt.Strategy):
         dt = dt or self.datas[0].datetime.date(0)
         print('%s, %s' % (dt.isoformat(), txt))
 
-    def __init__(self):
+    def __init__(self, model_params = None):
 #         print(self.datas[0])
+        self.model_param = model_params
         self.dataclose = self.datas[0].close
         self.dataopen = self.datas[0].open
         self.datahigh = self.datas[0].high
@@ -143,35 +144,53 @@ class TestStrategy(bt.Strategy):
                  (trade.pnl, trade.pnlcomm))
 
     def next(self):
-        # Simply log the closing price of the series from the reference
-        self.log('Close, %.2f' % self.dataclose[0])
+        if self.model_param == 'mean-reversion':
+            
+        elif self.model_param == 'momentum':
+            
+        # only look at data that existed yesterday
+        available = list(filter(lambda d: len(d), self.datas)) 
+        
+        rets = np.zeros(len(available))
+        for i, d in enumerate(available):
+            # calculate individual daily returns
+            rets[i] = (d.close[0]- d.close[-1]) / d.close[-1]
 
-        # Check if an order is pending ... if yes, we cannot send a 2nd one
-        if self.order:
-            return
+        # calculate weights using formula
+        market_ret = np.mean(rets)
+        weights = -(rets - market_ret)
+        weights = weights / np.sum(np.abs(weights))
+        
+        for i, d in enumerate(available):
+            self.order_target_percent(d, target=weights[i])
+#         # Simply log the closing price of the series from the reference
+#         self.log('Close, %.2f' % self.dataclose[0])
 
-        # Check if we are in the market
-        if not self.position:
+#         # Check if an order is pending ... if yes, we cannot send a 2nd one
+#         if self.order:
+#             return
 
-            # Not yet ... we MIGHT BUY if ...
-            if self.dataclose[0] < self.dataclose[-1]:
-                    # current close less than previous close
+#         # Check if we are in the market
+#         if not self.position:
 
-                    if self.dataclose[-1] < self.dataclose[-2]:
-                        # previous close less than the previous close
+#             # Not yet ... we MIGHT BUY if ...
+#             if self.dataclose[0] < self.dataclose[-1]:
+#                     # current close less than previous close
 
-                        # BUY, BUY, BUY!!! (with default parameters)
-                        self.log('BUY CREATE, %.2f' % self.dataclose[0])
+#                     if self.dataclose[-1] < self.dataclose[-2]:
+#                         # previous close less than the previous close
 
-                        # Keep track of the created order to avoid a 2nd order
-                        self.order = self.buy()
+#                         # BUY, BUY, BUY!!! (with default parameters)
+#                         self.log('BUY CREATE, %.2f' % self.dataclose[0])
 
-        else:
+#                         # Keep track of the created order to avoid a 2nd order
+#                         self.order = self.buy()
 
-            # Already in the market ... we might sell
-            if len(self) >= (self.bar_executed + self.params.exitbars):
-                # SELL, SELL, SELL!!! (with all possible default parameters)
-                self.log('SELL CREATE, %.2f' % self.dataclose[0])
+#         else:
+#             # Already in the market ... we might sell
+#             if len(self) >= (self.bar_executed + self.params.exitbars):
+#                 # SELL, SELL, SELL!!! (with all possible default parameters)
+#                 self.log('SELL CREATE, %.2f' % self.dataclose[0])
 
-                # Keep track of the created order to avoid a 2nd order
-                self.order = self.sell()
+#                 # Keep track of the created order to avoid a 2nd order
+#                 self.order = self.sell()

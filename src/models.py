@@ -21,4 +21,23 @@ class Momentum(bt.Indicator):
         # store the momentum
         self.lines.tendency[0] = annualized * (res.rvalue ** 2)
 
+class CrossSectionalMR(bt.Strategy):
+    def prenext(self):
+        self.next()
+    
+    def next(self):
+        # only look at data that existed yesterday
+        available = list(filter(lambda d: len(d), self.datas)) 
         
+        rets = np.zeros(len(available))
+        for i, d in enumerate(available):
+            # calculate individual daily returns
+            rets[i] = (d.close[0]- d.close[-1]) / d.close[-1]
+
+        # calculate weights using formula
+        market_ret = np.mean(rets)
+        weights = -(rets - market_ret)
+        weights = weights / np.sum(np.abs(weights))
+        
+        for i, d in enumerate(available):
+            self.order_target_percent(d, target=weights[i])
