@@ -197,4 +197,5 @@ class CrossSectionalMR(bt.Strategy):
         weights = weights / np.sum(np.abs(weights))
         
         for i, d in enumerate(available):
+            # trigger order purchase
             self.order_target_percent(d, target=weights[i])

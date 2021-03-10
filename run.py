@@ -27,7 +27,7 @@ def load_params(fp):
             
         
 def display_menu():
-    print('writing something !')
+    print('--> writing something !')
     ### TODO
 
 def write_sys_log(msg):
@@ -68,7 +68,7 @@ def ingest_data(params, acc):
             axis=1, \
             sort=True)
     
-    # create ckpts to save time
+    # create csv ckpts to save time
     stocks = stocks.loc[:,~stocks.columns.duplicated()]
     
     for ticker in tickers:
@@ -90,7 +90,7 @@ def ingest_data(params, acc):
     return acc
     
 def invest(params, acc):
-    ###### TODO 把下面的分开
+    # 把下面的分开
 #     params
     acc.addstrategy(CrossSectionalMR)
 #     acc.addsizer(bt.sizers.PercentSizer, percents = 50) ##### cheat-on-open
@@ -108,7 +108,12 @@ def invest(params, acc):
     
     return acc
     
+def run_analyzer():
+    pass
 
+
+def generate_viz():
+    pass
 
 def main(argv):
     account_params = load_params(ACCOUNT_PATH)
